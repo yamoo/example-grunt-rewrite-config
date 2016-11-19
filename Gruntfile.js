@@ -44,6 +44,7 @@ module.exports = function(grunt) {
       html: 'build/*.html',
       options: {
         dest: 'build',
+        root: 'src',
         flow: {
           steps: {
             js: ['concat']
