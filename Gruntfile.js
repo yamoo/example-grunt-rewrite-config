@@ -22,6 +22,24 @@ module.exports = function(grunt) {
       }
     },
 
+    replace: {
+      build: {
+        options: {
+          patterns: [{
+            match: 'revision',
+            replacement: '<%= grunt.template.today("yyyymmdd") %>'
+          }]
+        },
+        files: [{
+          expand: true,
+          cwd: 'build',
+          src: ['*.html'],
+          dest: 'build/',
+          filter: 'isFile'
+        }]
+      }
+    },
+
     useminPrepare: {
       html: 'build/*.html',
       options: {
@@ -58,12 +76,14 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-rewrite-config');
+  grunt.loadNpmTasks('grunt-replace');
   grunt.loadNpmTasks('grunt-usemin');
 
   // By default, lint and run all tests.
   grunt.registerTask('default', [
     'clean',
     'copy',
+    'replace',
     'useminPrepare',
     'rewriteConfig',
     'concat',
