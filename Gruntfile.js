@@ -47,7 +47,8 @@ module.exports = function(grunt) {
         root: 'src',
         flow: {
           steps: {
-            js: ['concat']
+            css: ['concat', 'cssmin'],
+            js: ['concat', 'uglifyjs']
           },
           post: {}
         }
@@ -62,9 +63,17 @@ module.exports = function(grunt) {
       build: {
         options: {
           rewrite: function(config) {
-            config.concat.generated.files.forEach(function(file) {
-              file.dest = file.dest.split('?')[0];
-            });
+            function removeQuery(target) {
+              target.files.forEach(function(file) {
+                file.dest = file.dest.split('?')[0];
+                file.src = file.src.map(function(srcPath) {
+                  return srcPath.split('?')[0];
+                });
+              });
+            }
+            removeQuery(config.concat.generated);
+            removeQuery(config.uglify.generated);
+            removeQuery(config.cssmin.generated);
           }
         }
       }
@@ -76,6 +85,8 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-concat');
+  grunt.loadNpmTasks('grunt-contrib-cssmin');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-rewrite-config');
   grunt.loadNpmTasks('grunt-replace');
   grunt.loadNpmTasks('grunt-usemin');
@@ -88,6 +99,8 @@ module.exports = function(grunt) {
     'useminPrepare',
     'rewriteConfig',
     'concat',
+    'uglify',
+    'cssmin',
     'usemin'
   ]);
 
